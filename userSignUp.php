@@ -24,8 +24,8 @@ $address = $data['address'];
 $role = $data['role'] ?? 'user';
 $stmt = $conn->prepare("INSERT INTO user (first_name , last_name , username , email , password , phone , address , role) VALUES (? , ? , ? , ? , ? , ? , ? , ?)");
 $stmt->bind_param('ssssssss' , $first_name , $last_name , $username , $email , $password , $phone , $address , $role);
-
-if (!$stmt->execute()) {
+$result = $stmt->execute();
+if ($result === false) {
     http_response_code(500);
     echo json_encode(["status"=>"error","message"=>"Error inserting user: ".$stmt->error]);
     exit;
@@ -34,8 +34,8 @@ $user_id = $conn->insert_id;
 if ($role === 'admin') {
 $stmt2 = $conn->prepare("INSERT INTO admin ( user_id ,  username , password) VALUES ( ? , ? , ?)");
 $stmt2->bind_param('iss', $user_id ,  $username , $password);
-
-    if (!$stmt2->execute()) {
+$result2 = $stmt2->execute();
+    if ($result2 === false) {
         http_response_code(500);
         echo json_encode(["status"=>"error","message"=>"Error inserting admin: ".$stmt2->error]);
         exit;
