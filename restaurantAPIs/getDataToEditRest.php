@@ -1,5 +1,5 @@
 <?php
-include 'connection/conn.php';
+include '../connection/conn.php';
 
 if (!isset($_GET['rest_id'])) {
     http_response_code(422);

@@ -1,5 +1,5 @@
 <?php
-include 'connection/conn.php';
+include '../connection/conn.php';
 $id=$_GET['rest_id'];
 $stmt=$conn->prepare('DELETE FROM rest_table WHERE rest_id=?');
 $stmt->bind_param('i', $id);

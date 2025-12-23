@@ -1,5 +1,5 @@
 <?php
-include 'connection/conn.php';
+include '../connection/conn.php';
 $data = json_decode(file_get_contents('php://input') , true);
 $id = $data['rest_id'];
 $new_name= $data['new_name'];
