@@ -1,8 +1,10 @@
 <?php
+include 'connection/conn.php';
 require 'vendor/autoload.php';
 use Firebase\JWT\JWT;
-include 'connection/conn.php';
-
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 $data= json_decode(file_get_contents('php://input'), true);
 if ($data === null) {
     http_response_code(400);
@@ -19,7 +21,6 @@ foreach ($fields as $field) {
 }
 $username = $data['username'];
 $password = $data['password'];
-
 $stmt = $conn->prepare("SELECT user_id, username, password, role FROM user WHERE username = ?");
 $stmt->bind_param('s', $username);
 $stmt->execute();
@@ -42,7 +43,7 @@ $payload =[
     'username'=> $user['username'],
     'role'=> $user['role']
 ];
-$secretKey = getenv('JWT_SECRET');
+$secretKey = $_ENV['JWT_SECRET'];
 $token = JWT::encode($payload, $secretKey, 'HS256');
 echo json_encode(["status" => "success", "message" => "Login successful" , "token"=> $token]);
 ?>
