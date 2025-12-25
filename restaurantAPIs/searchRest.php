@@ -7,8 +7,10 @@ if (isset($_GET['name'])) {
 } elseif (isset($_GET['category'])) {
     $search = $_GET['category'];
     $stmt = $conn->prepare("SELECT * FROM rest_table
-        JOIN rest_rest_category ON rest_table.rest_id = rest_rest_category.rest_id
-        JOIN rest_category ON rest_rest_category.rest_cat_id = rest_category.rest_cat_id
+        JOIN rest_rest_category
+        ON rest_table.rest_id = rest_rest_category.rest_id
+        JOIN rest_category
+        ON rest_rest_category.rest_cat_id = rest_category.rest_cat_id
         WHERE rest_category.cat_name LIKE ?
         GROUP BY rest_table.rest_id
     ");
