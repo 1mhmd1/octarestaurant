@@ -6,14 +6,11 @@ if (!isset($_GET['rest_id'])) {
     echo json_encode(["status"=>"error","message"=>"rest_id is required"]);
     exit;
 }
-
 $rest_id = $_GET['rest_id'];
-
 $stmt = $conn->prepare("SELECT * FROM rest_table WHERE rest_id = ?");
 $stmt->bind_param("i", $rest_id);
 $stmt->execute();
 $result = $stmt->get_result();
-
 if ($row = $result->fetch_assoc()) {
     echo json_encode($row);
 } else {
