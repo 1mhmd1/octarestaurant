@@ -22,7 +22,6 @@ $password = password_hash($data['password'], PASSWORD_DEFAULT);
 $phone = $data['phone'];
 $address = $data['address'];
 $role = $data['role'] ?? 'user';
-
 $check_user=$conn->prepare("SELECT user_id FROM user WHERE username = ? OR email = ?");
 $check_user->bind_param('ss', $username , $email);
 $check_user->execute();
@@ -50,7 +49,6 @@ $result2 = $stmt2->execute();
         echo json_encode(["status"=>"error","message"=>"Error inserting admin: ".$stmt2->error]);
         exit;
     }
-
 }
 echo json_encode(["status"=>"success","message"=>"User registered successfully"]);
 
