@@ -1,7 +1,6 @@
 <?php
 // require 'auth.php';
 include '../connection/conn.php';
-
 $data = json_decode(file_get_contents('php://input') , true);
 if($data === null){
     http_response_code(400);
