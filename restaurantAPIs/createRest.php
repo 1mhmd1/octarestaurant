@@ -21,6 +21,10 @@ $location = $data['location'];
 $phone = $data['phone'];
 $opening_hours = $data['opening_hours'];
 $categories = $data['categories'];
+if (is_string($categories)) { // convert it to array
+    $categories = [$categories];
+}
+$categories = array_unique($categories); // remove duplicated values of category
 $stmt = $conn->prepare("INSERT INTO rest_table (name  , description , location , phone , opening_hours) VALUES (? , ? , ? , ? , ?)");
 $stmt->bind_param('sssss' , $name, $description, $location, $phone, $opening_hours);
 $result = $stmt->execute();
@@ -36,12 +40,12 @@ foreach($categories as $cat_name){
     $stmt_category->bind_param('s', $cat_name);
     $stmt_category->execute();
     $result = $stmt_category->get_result();
-    if($row = $result->fetch_assoc()){
+    if($row = $result->fetch_assoc()){ // true
     $rest_cat_id = $row['rest_cat_id'];
     $stmt_insert->bind_param('ii', $rest_id, $rest_cat_id);
     $stmt_insert->execute();
     }
-    else{
+    else{ // false 
     $stmt_new = $conn->prepare("INSERT INTO rest_category (cat_name) VALUES (?)");
     $stmt_new->bind_param('s', $cat_name);
     $stmt_new->execute();
