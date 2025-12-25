@@ -22,6 +22,16 @@ $password = password_hash($data['password'], PASSWORD_DEFAULT);
 $phone = $data['phone'];
 $address = $data['address'];
 $role = $data['role'] ?? 'user';
+
+$check_user=$conn->prepare("SELECT user_id FROM user WHERE username = ?");
+$check_user->bind_param('s', $username);
+$check_user->execute();
+$check_user->store_result();
+if($check_user->num_rows > 0 ){
+    http_response_code(409);
+    echo json_encode(["status" => "error", "message" => "Username already taken"]);
+    exit;
+}
 $stmt = $conn->prepare("INSERT INTO user (first_name , last_name , username , email , password , phone , address , role) VALUES (? , ? , ? , ? , ? , ? , ? , ?)");
 $stmt->bind_param('ssssssss' , $first_name , $last_name , $username , $email , $password , $phone , $address , $role);
 $result = $stmt->execute();
