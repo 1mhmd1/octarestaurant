@@ -1,22 +1,18 @@
-import AdminNav from "./AdminNav.jsx";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
-
+import Dashboard from "./pages/Dashboard.jsx";
+import ControlMenu from "./pages/ControlMenu.jsx";
+import ControlRestaurants from "./pages/ControlRestaurants.jsx";
+import AdminLayout from "./AdminLayout.jsx";
+import { Routes, Route } from "react-router-dom";
 function App() {
   return (
-    <div className="flex">
-      <AdminNav />
-
-      <main className="flex-1 p-6">
-        <Routes>
-          <Route path="/admin/dashboard" element={<div>Dashboard Page</div>} />
-          <Route
-            path="/admin/restaurants"
-            element={<div>Restaurants Page</div>}
-          />
-          <Route path="/admin/menu" element={<div>Menu Page</div>} />
-        </Routes>
-      </main>
-    </div>
+    <Routes>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="menu" element={<ControlMenu />} />
+        <Route path="restaurants" element={<ControlRestaurants />} />
+      </Route>
+    </Routes>
   );
 }
 
