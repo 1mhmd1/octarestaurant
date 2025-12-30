@@ -2,10 +2,8 @@
 
 https://rest123.lovable.app/admin/restaurants
 
+SELECT user, host, plugin 
+FROM mysql.user 
+WHERE user = 'mhmdSalim';
 
-ALTER USER 'mhmdSalim'@'%' 
-IDENTIFIED WITH mysql_native_password 
-BY 'StrongPassword123';
-
-FLUSH PRIVILEGES;
              
