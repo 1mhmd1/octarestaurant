@@ -1,1 +1,1 @@
-export const API_BASE = "http://localhost/restaurants/restaurantAPIs";
+export const API_BASE = "http://localhost/restaurants/backend";

@@ -9,7 +9,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    fetch("http://localhost/restaurants/backend/restaurantAPIs/getRests.php")
+    fetch("${API_BASE}/restaurantAPIs/getRests.php")
       .then((res) => res.json())
       .then((data) => {
         setStats({
