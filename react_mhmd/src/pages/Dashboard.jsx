@@ -1,5 +1,6 @@
 import DashboardCards from "../components/DashboardCards";
 import { useEffect, useState } from "react";
+import { API_BASE } from "../config/api";
 
 function Dashboard() {
   const [stats, setStats] = useState({
@@ -9,14 +10,22 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    fetch("${API_BASE}/restaurantAPIs/getRests.php")
-      .then((res) => res.json())
+    fetch(`${API_BASE}/restaurantAPIs/dashboard-stats.php`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch dashboard stats");
+        }
+        return res.json();
+      })
       .then((data) => {
         setStats({
-          restaurants: data.restaurants,
-          menuItems: data.menu_items,
-          orders: data.orders,
+          restaurants: data.restaurants ?? 0,
+          menuItems: data.menu_items ?? 0,
+          orders: data.orders ?? 0,
         });
+      })
+      .catch((err) => {
+        console.error("Dashboard API error:", err);
       });
   }, []);
 
@@ -31,23 +40,25 @@ function Dashboard() {
         </p>
       </div>
 
-      <DashboardCards
-        icon="fa-solid fa-store"
-        value={stats.restaurants}
-        title="Total Restaurants"
-      />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+        <DashboardCards
+          icon="fa-solid fa-store"
+          value={stats.restaurants}
+          title="Total Restaurants"
+        />
 
-      <DashboardCards
-        icon="fa-solid fa-utensils"
-        value={stats.menuItems}
-        title="Menu Items"
-      />
+        <DashboardCards
+          icon="fa-solid fa-utensils"
+          value={stats.menuItems}
+          title="Menu Items"
+        />
 
-      <DashboardCards
-        icon="fa-solid fa-bag-shopping"
-        value={stats.orders}
-        title="Total Orders"
-      />
+        <DashboardCards
+          icon="fa-solid fa-bag-shopping"
+          value={stats.orders}
+          title="Total Orders"
+        />
+      </div>
     </div>
   );
 }
