@@ -7,7 +7,6 @@ function RestaurantPreview({ restId, onClose }) {
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ================= FETCH DATA =================
   useEffect(() => {
     if (!restId) return;
 
@@ -15,21 +14,18 @@ function RestaurantPreview({ restId, onClose }) {
       try {
         setLoading(true);
 
-        // 1️⃣ Restaurant info
         const restRes = await fetch(
           `${API_BASE}/restaurantAPIs/getDataToEditRest.php?rest_id=${restId}`
         );
         const restData = await restRes.json();
         setRestaurant(restData);
 
-        // 2️⃣ Menus
         const menuRes = await fetch(
           `${API_BASE}/menuAPIs/getMenusByRestaurant.php?rest_id=${restId}`
         );
         const menuData = await menuRes.json();
         setMenus(menuData);
 
-        // 3️⃣ Foods (all menus)
         let allFoods = [];
         for (let menu of menuData) {
           const foodRes = await fetch(
@@ -57,11 +53,10 @@ function RestaurantPreview({ restId, onClose }) {
     );
   }
 
-  // ================= UI =================
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-3xl rounded-xl p-6 relative max-h-[90vh] overflow-y-auto">
-        {/* Close */}
+        {}
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500"
@@ -69,19 +64,19 @@ function RestaurantPreview({ restId, onClose }) {
           ✕
         </button>
 
-        {/* Restaurant Info */}
+        {}
         <div className="mb-6">
           <h2 className="text-2xl font-bold">{restaurant.name}</h2>
           <p className="text-gray-500">{restaurant.location}</p>
           <p className="text-sm mt-2">{restaurant.description}</p>
         </div>
 
-        {/* Menus */}
+        {}
         {menus.map((menu) => (
           <div key={menu.menu_id} className="mb-6">
             <h3 className="text-xl font-semibold mb-3">🍽 {menu.name}</h3>
 
-            {/* Foods */}
+            {}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {foods
                 .filter((f) => f.menu_id === menu.menu_id)

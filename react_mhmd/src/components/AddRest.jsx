@@ -25,7 +25,6 @@ function AddRest({ onClose, onSuccess }) {
     setLoading(true);
 
     try {
-      // ✅ FormData بدل JSON
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("description", form.description);
@@ -43,14 +42,13 @@ function AddRest({ onClose, onSuccess }) {
         )
       );
 
-      // ✅ الصورة (اختياري)
       if (image) {
         formData.append("image", image);
       }
 
       const res = await fetch(`${API_BASE}/restaurantAPIs/createRest.php`, {
         method: "POST",
-        body: formData, // ⚠️ لا headers
+        body: formData,
       });
 
       const data = await res.json();

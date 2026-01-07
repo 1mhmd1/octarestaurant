@@ -10,7 +10,7 @@ function EditRest({ restId, onSuccess, onClose }) {
     new_opening_hours: "",
   });
 
-  const [image, setImage] = useState(null); // ✅ جديد
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     if (!restId) return;
@@ -37,7 +37,6 @@ function EditRest({ restId, onSuccess, onClose }) {
 
     let options = {};
 
-    // ✅ إذا في صورة → FormData
     if (image) {
       const formData = new FormData();
       formData.append("rest_id", restId);
@@ -52,9 +51,7 @@ function EditRest({ restId, onSuccess, onClose }) {
         method: "POST",
         body: formData,
       };
-    }
-    // ✅ بدون صورة → JSON (كما كان)
-    else {
+    } else {
       options = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -135,7 +132,7 @@ function EditRest({ restId, onSuccess, onClose }) {
             required
           />
 
-          {/* ✅ input الصورة (اختياري) */}
+          {}
           <input
             type="file"
             accept="image/*"
