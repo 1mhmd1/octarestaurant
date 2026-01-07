@@ -12,9 +12,7 @@ function Dashboard() {
   useEffect(() => {
     fetch(`${API_BASE}/restaurantAPIs/dashboard-stats.php`)
       .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch dashboard stats");
-        }
+        if (!res.ok) throw new Error("Failed to fetch dashboard stats");
         return res.json();
       })
       .then((data) => {
@@ -24,39 +22,44 @@ function Dashboard() {
           orders: data.orders ?? 0,
         });
       })
-      .catch((err) => {
-        console.error("Dashboard API error:", err);
-      });
+      .catch((err) => console.error(err));
   }, []);
 
   return (
     <div>
-      <div className="flex flex-col -mt-2">
-        <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-        <p className="text-gray-500 font-normal -mt-3 text-lg">
-          Welcome to{" "}
-          <span className="text-orange-500 font-bold">OctaDine </span>
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <p className="text-gray-500 text-lg">
+          Welcome to <span className="text-orange-500 font-bold">OctaDine</span>{" "}
           Admin Panel
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <DashboardCards
           icon="fa-solid fa-store"
           value={stats.restaurants}
           title="Total Restaurants"
+          bgColor="bg-orange-50"
+          iconColor="text-orange-500"
         />
 
         <DashboardCards
           icon="fa-solid fa-utensils"
           value={stats.menuItems}
           title="Menu Items"
+          bgColor="bg-orange-50"
+          iconColor="text-orange-500"
         />
 
         <DashboardCards
           icon="fa-solid fa-bag-shopping"
           value={stats.orders}
           title="Total Orders"
+          bgColor="bg-[rgba(34,195,93,0.1)]"
+          iconColor="text-[rgba(34,195,93,1)]"
         />
       </div>
     </div>

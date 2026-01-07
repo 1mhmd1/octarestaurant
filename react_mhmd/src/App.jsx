@@ -2,6 +2,9 @@ import Dashboard from "./pages/Dashboard.jsx";
 import ControlMenu from "./pages/ControlMenu.jsx";
 import ControlRestaurants from "./pages/ControlRestaurants.jsx";
 import AdminLayout from "./AdminLayout.jsx";
+import RestaurantPreview from "./components/RestaurantPreview";
+import EditMenu from "./components/EditMenu";
+
 import { Routes, Route } from "react-router-dom";
 function App() {
   return (

@@ -2,25 +2,53 @@ import { useEffect, useState } from "react";
 import { API_BASE } from "../config/api";
 import AddRest from "../components/AddRest";
 import EditRest from "../components/EditRest";
+import RestaurantPreview from "../components/RestaurantPreview";
+import EditMenu from "../components/EditMenu";
 
 function ControlRestaurants() {
+  // ================= STATES =================
   const [restaurants, setRestaurants] = useState([]);
-  const [initialLoading, setInitialLoading] = useState(true); // ⬅️ أول تحميل فقط
-  const [searching, setSearching] = useState(false); // ⬅️ أثناء البحث
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [error, setError] = useState(null);
+
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [showEditMenu, setShowEditMenu] = useState(false);
+
   const [selectedRestId, setSelectedRestId] = useState(null);
+
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  // ✏️ Edit
+  // ================= HELPERS =================
+  const formatRestaurant = (r) => ({
+    id: r.rest_id,
+    name: r.name,
+    description: r.description,
+    location: r.location,
+    phone: r.phone,
+    openingHours: r.opening_hours,
+    image: r.image || "placeholder.png",
+  });
+
+  // ================= ACTIONS =================
   const handleEdit = (id) => {
     setSelectedRestId(id);
     setShowEdit(true);
   };
 
-  // 🗑️ Delete
+  const handlePreview = (id) => {
+    setSelectedRestId(id);
+    setShowPreview(true);
+  };
+
+  const handleEditMenu = (id) => {
+    setSelectedRestId(id);
+    setShowEditMenu(true);
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this restaurant?")) {
       return;
@@ -42,7 +70,7 @@ function ControlRestaurants() {
     }
   };
 
-  // ⏱️ Debounce effect
+  // ================= DEBOUNCE SEARCH =================
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -51,76 +79,50 @@ function ControlRestaurants() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // 🔍 Fetch data
-  useEffect(() => {
-    const controller = new AbortController();
+  // ================= FETCH DATA =================
+  const fetchData = async () => {
+    if (debouncedSearch === "") {
+      setInitialLoading(true);
+    } else {
+      setSearching(true);
+    }
 
-    const fetchData = async () => {
-      // 🔹 فرق بين تحميل أولي وبحث
-      if (initialLoading) {
-        setInitialLoading(true);
+    setError(null);
+
+    try {
+      let url = `${API_BASE}/restaurantAPIs/getRests.php`;
+
+      if (debouncedSearch.trim() !== "") {
+        url = `${API_BASE}/restaurantAPIs/searchRest.php?name=${encodeURIComponent(
+          debouncedSearch
+        )}`;
+      }
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setRestaurants(data.map(formatRestaurant));
+      } else if (data.status === "success") {
+        setRestaurants(data.data.map(formatRestaurant));
       } else {
-        setSearching(true);
+        setRestaurants([]);
       }
+    } catch (err) {
+      console.error(err);
+      setError("Unable to load restaurants");
+      setRestaurants([]);
+    } finally {
+      setInitialLoading(false);
+      setSearching(false);
+    }
+  };
 
-      setError(null);
-
-      try {
-        let url = `${API_BASE}/restaurantAPIs/getRests.php`;
-
-        if (debouncedSearch.trim() !== "") {
-          url = `${API_BASE}/restaurantAPIs/searchRest.php?name=${encodeURIComponent(
-            debouncedSearch
-          )}`;
-        }
-
-        const res = await fetch(url, { signal: controller.signal });
-        const data = await res.json();
-
-        if (Array.isArray(data)) {
-          setRestaurants(
-            data.map((r) => ({
-              id: r.rest_id,
-              name: r.name,
-              description: r.description,
-              location: r.location,
-              phone: r.phone,
-              openingHours: r.opening_hours,
-              image: r.image || "placeholder.png",
-            }))
-          );
-        } else if (data.status === "success") {
-          setRestaurants(
-            data.data.map((r) => ({
-              id: r.rest_id,
-              name: r.name,
-              description: r.description,
-              location: r.location,
-              phone: r.phone,
-              openingHours: r.opening_hours,
-              image: r.image || "placeholder.png",
-            }))
-          );
-        } else {
-          setRestaurants([]);
-        }
-      } catch (err) {
-        if (err.name !== "AbortError") {
-          console.error(err);
-          setError("Unable to load restaurants");
-          setRestaurants([]);
-        }
-      } finally {
-        setInitialLoading(false);
-        setSearching(false);
-      }
-    };
-
+  useEffect(() => {
     fetchData();
-    return () => controller.abort();
   }, [debouncedSearch]);
 
-  // 🛑 Loading أولي فقط
+  // ================= UI STATES =================
   if (initialLoading) {
     return <p className="text-gray-500">Loading restaurants...</p>;
   }
@@ -129,8 +131,10 @@ function ControlRestaurants() {
     return <p className="text-red-500">{error}</p>;
   }
 
+  // ================= RENDER =================
   return (
     <div>
+      {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
           Restaurants
@@ -146,6 +150,8 @@ function ControlRestaurants() {
           + Add Restaurant
         </button>
       </div>
+
+      {/* SEARCH */}
       <div className="relative max-w-md mb-6">
         <input
           type="text"
@@ -161,6 +167,8 @@ function ControlRestaurants() {
           </div>
         )}
       </div>
+
+      {/* LIST */}
       <div className="space-y-4">
         {restaurants.map((rest) => (
           <div
@@ -185,6 +193,20 @@ function ControlRestaurants() {
 
             <div className="flex items-center gap-3">
               <button
+                onClick={() => handlePreview(rest.id)}
+                className="text-blue-600 hover:text-blue-800 text-sm"
+              >
+                👁 Preview
+              </button>
+
+              <button
+                onClick={() => handleEditMenu(rest.id)}
+                className="text-purple-600 hover:text-purple-800 text-sm"
+              >
+                🍽 Edit Menu
+              </button>
+
+              <button
                 onClick={() => handleEdit(rest.id)}
                 className="text-gray-600 hover:text-gray-800"
               >
@@ -197,19 +219,19 @@ function ControlRestaurants() {
               >
                 🗑️
               </button>
-
-              <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
-                Open
-              </span>
             </div>
           </div>
         ))}
       </div>
 
+      {/* MODALS */}
       {showAdd && (
         <AddRest
           onClose={() => setShowAdd(false)}
-          onSuccess={() => setShowAdd(false)}
+          onSuccess={() => {
+            setShowAdd(false);
+            fetchData();
+          }}
         />
       )}
 
@@ -217,7 +239,24 @@ function ControlRestaurants() {
         <EditRest
           restId={selectedRestId}
           onClose={() => setShowEdit(false)}
-          onSuccess={() => setShowEdit(false)}
+          onSuccess={() => {
+            setShowEdit(false);
+            fetchData();
+          }}
+        />
+      )}
+
+      {showPreview && (
+        <RestaurantPreview
+          restId={selectedRestId}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
+
+      {showEditMenu && (
+        <EditMenu
+          restId={selectedRestId}
+          onClose={() => setShowEditMenu(false)}
         />
       )}
     </div>

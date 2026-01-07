@@ -11,6 +11,7 @@ function AddRest({ onClose, onSuccess }) {
     categories: "",
   });
 
+  const [image, setImage] = useState(null); // ✅ جديد
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -24,16 +25,32 @@ function AddRest({ onClose, onSuccess }) {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE}/restaurantAPIs/createRest.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          categories: form.categories
+      // ✅ FormData بدل JSON
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("description", form.description);
+      formData.append("location", form.location);
+      formData.append("phone", form.phone);
+      formData.append("opening_hours", form.opening_hours);
+
+      formData.append(
+        "categories",
+        JSON.stringify(
+          form.categories
             .split(",")
             .map((c) => c.trim())
-            .filter(Boolean),
-        }),
+            .filter(Boolean)
+        )
+      );
+
+      // ✅ الصورة (اختياري)
+      if (image) {
+        formData.append("image", image);
+      }
+
+      const res = await fetch(`${API_BASE}/restaurantAPIs/createRest.php`, {
+        method: "POST",
+        body: formData, // ⚠️ لا headers
       });
 
       const data = await res.json();
@@ -112,6 +129,13 @@ function AddRest({ onClose, onSuccess }) {
             className="w-full border rounded-lg px-3 py-2"
             onChange={handleChange}
             required
+          />
+
+          {}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
           />
 
           <div className="flex justify-end gap-3 pt-3">

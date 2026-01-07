@@ -10,6 +10,8 @@ function EditRest({ restId, onSuccess, onClose }) {
     new_opening_hours: "",
   });
 
+  const [image, setImage] = useState(null); // ✅ جديد
+
   useEffect(() => {
     if (!restId) return;
 
@@ -33,11 +35,37 @@ function EditRest({ restId, onSuccess, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`${API_BASE}/restaurantAPIs/updateRest.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rest_id: restId, ...form }),
-    });
+    let options = {};
+
+    // ✅ إذا في صورة → FormData
+    if (image) {
+      const formData = new FormData();
+      formData.append("rest_id", restId);
+
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      formData.append("image", image);
+
+      options = {
+        method: "POST",
+        body: formData,
+      };
+    }
+    // ✅ بدون صورة → JSON (كما كان)
+    else {
+      options = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rest_id: restId, ...form }),
+      };
+    }
+
+    const res = await fetch(
+      `${API_BASE}/restaurantAPIs/updateRest.php`,
+      options
+    );
 
     const data = await res.json();
 
@@ -50,10 +78,8 @@ function EditRest({ restId, onSuccess, onClose }) {
   };
 
   return (
-    // 🔥 OVERLAY
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-lg rounded-xl p-6 relative max-h-[90vh] overflow-y-auto">
-        {/* Close */}
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500"
@@ -107,6 +133,13 @@ function EditRest({ restId, onSuccess, onClose }) {
             placeholder="Opening hours"
             className="w-full border rounded-lg px-3 py-2"
             required
+          />
+
+          {/* ✅ input الصورة (اختياري) */}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
           />
 
           <div className="flex justify-end gap-3 pt-3">

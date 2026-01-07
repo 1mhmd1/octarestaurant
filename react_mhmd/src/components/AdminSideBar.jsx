@@ -25,7 +25,7 @@ function AdminSideBar() {
             className={({ isActive }) =>
               isActive
                 ? "bg-orange-500 font-bold text-white px-4 py-2 rounded-xl text-lg h-12  block "
-                : " hover:bg-orange-300  text-gray-500  text-lg  rounded-xl font-medium hover:text-orange-700 px-4 py-2 rounded block transition"
+                : " hover:bg-orange-300/30  text-gray-500  text-lg  rounded-xl font-medium hover:text-orange-700 px-4 py-2 rounded block transition"
             }
           >
             <i className="fa-solid fa-gauge mr-2"></i>
@@ -38,7 +38,7 @@ function AdminSideBar() {
             className={({ isActive }) =>
               isActive
                 ? "bg-orange-500 font-bold text-white px-4 py-2 rounded-xl text-lg h-12 block "
-                : " hover:bg-orange-300 text-gray-500  text-lg  rounded-xl font-medium hover:text-orange-700 px-4 py-2 rounded block transition"
+                : " hover:bg-orange-300/30  text-gray-500  text-lg  rounded-xl font-medium hover:text-orange-700 px-4 py-2 rounded block transition"
             }
           >
             <i className="fa-solid fa-store mr-2"></i>
@@ -51,7 +51,7 @@ function AdminSideBar() {
             className={({ isActive }) =>
               isActive
                 ? "bg-orange-500 font-bold text-white px-4 py-2 rounded-xl text-lg h-12 block "
-                : " hover:bg-orange-300 text-gray-500  text-lg  rounded-xl font-medium hover:text-orange-700 px-4 py-2 rounded block transition"
+                : " hover:bg-orange-300/30  text-gray-500  text-lg  rounded-xl font-medium hover:text-orange-700 px-4 py-2 rounded block transition"
             }
           >
             <i className="fa-solid fa-utensils mr-2"></i>
