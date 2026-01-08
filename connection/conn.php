@@ -1,10 +1,13 @@
 <?php
-$host = "localhost";  
-$dbname = "restaurant";
-$username = "root";   
-$password = "";
-$conn = mysqli_connect($host, $username, $password, $dbname);
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+$host = "centerbeam.proxy.rlwy.net";
+$port = 59934;
+$user = "root";
+$pass = "yQvvsgCwhGoHcENMTmwfmbhnJljYzQdh";
+$db   = "railway";
+
+$conn = new mysqli($host, $user, $pass, $db, $port);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 ?>
