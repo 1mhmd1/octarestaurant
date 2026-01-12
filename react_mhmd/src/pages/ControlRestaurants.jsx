@@ -6,7 +6,6 @@ import RestaurantPreview from "../components/RestaurantPreview";
 import EditMenu from "../components/EditMenu";
 
 function ControlRestaurants() {
-  // ================= STATES =================
   const [restaurants, setRestaurants] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
   const [searching, setSearching] = useState(false);
@@ -22,7 +21,6 @@ function ControlRestaurants() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  // ================= HELPERS =================
   const formatRestaurant = (r) => ({
     id: r.rest_id,
     name: r.name,
@@ -33,7 +31,6 @@ function ControlRestaurants() {
     image: r.image || "placeholder.png",
   });
 
-  // ================= ACTIONS =================
   const handleEdit = (id) => {
     setSelectedRestId(id);
     setShowEdit(true);
@@ -70,7 +67,6 @@ function ControlRestaurants() {
     }
   };
 
-  // ================= DEBOUNCE SEARCH =================
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search);
@@ -79,7 +75,6 @@ function ControlRestaurants() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // ================= FETCH DATA =================
   const fetchData = async () => {
     if (debouncedSearch === "") {
       setInitialLoading(true);
@@ -122,7 +117,6 @@ function ControlRestaurants() {
     fetchData();
   }, [debouncedSearch]);
 
-  // ================= UI STATES =================
   if (initialLoading) {
     return <p className="text-gray-500">Loading restaurants...</p>;
   }
@@ -131,10 +125,9 @@ function ControlRestaurants() {
     return <p className="text-red-500">{error}</p>;
   }
 
-  // ================= RENDER =================
   return (
     <div>
-      {/* HEADER */}
+      {}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">
           Restaurants
@@ -151,7 +144,7 @@ function ControlRestaurants() {
         </button>
       </div>
 
-      {/* SEARCH */}
+      {}
       <div className="relative max-w-md mb-6">
         <input
           type="text"
@@ -168,7 +161,7 @@ function ControlRestaurants() {
         )}
       </div>
 
-      {/* LIST */}
+      {}
       <div className="space-y-4">
         {restaurants.map((rest) => (
           <div
@@ -224,7 +217,7 @@ function ControlRestaurants() {
         ))}
       </div>
 
-      {/* MODALS */}
+      {}
       {showAdd && (
         <AddRest
           onClose={() => setShowAdd(false)}
