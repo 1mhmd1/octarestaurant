@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { API_BASE } from "../config/api";
 
-function AddRest({ onClose, onSuccess }) {
+function AddRest({ onClose, onSuccess, onAddMenu }) {
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -11,9 +11,11 @@ function AddRest({ onClose, onSuccess }) {
     categories: "",
   });
 
-  const [image, setImage] = useState(null); // ✅ جديد
+  const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [createdRestId, setCreatedRestId] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -21,6 +23,8 @@ function AddRest({ onClose, onSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (createdRestId) return; // ⛔ prevent double submit
+
     setError(null);
     setLoading(true);
 
@@ -57,8 +61,9 @@ function AddRest({ onClose, onSuccess }) {
         throw new Error(data.message || "Failed to add restaurant");
       }
 
+      setCreatedRestId(data.rest_id);
+
       onSuccess();
-      onClose();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -69,6 +74,7 @@ function AddRest({ onClose, onSuccess }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white w-full max-w-lg rounded-xl p-6 relative">
+        {}
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-500"
@@ -88,7 +94,6 @@ function AddRest({ onClose, onSuccess }) {
             onChange={handleChange}
             required
           />
-
           <textarea
             name="description"
             placeholder="Description"
@@ -96,7 +101,6 @@ function AddRest({ onClose, onSuccess }) {
             onChange={handleChange}
             required
           />
-
           <input
             name="location"
             placeholder="Address"
@@ -104,7 +108,6 @@ function AddRest({ onClose, onSuccess }) {
             onChange={handleChange}
             required
           />
-
           <input
             name="phone"
             placeholder="Phone"
@@ -112,7 +115,6 @@ function AddRest({ onClose, onSuccess }) {
             onChange={handleChange}
             required
           />
-
           <input
             name="opening_hours"
             placeholder="Opening hours (08:00 - 22:00)"
@@ -120,7 +122,6 @@ function AddRest({ onClose, onSuccess }) {
             onChange={handleChange}
             required
           />
-
           <input
             name="categories"
             placeholder="Categories (comma separated)"
@@ -128,14 +129,12 @@ function AddRest({ onClose, onSuccess }) {
             onChange={handleChange}
             required
           />
-
-          {}
           <input
             type="file"
             accept="image/*"
             onChange={(e) => setImage(e.target.files[0])}
           />
-
+          }
           <div className="flex justify-end gap-3 pt-3">
             <button
               type="button"
@@ -147,13 +146,28 @@ function AddRest({ onClose, onSuccess }) {
 
             <button
               type="submit"
-              disabled={loading}
-              className="bg-orange-500 text-white px-5 py-2 rounded-lg"
+              disabled={loading || createdRestId}
+              className="bg-orange-500 text-white px-5 py-2 rounded-lg disabled:opacity-60"
             >
               {loading ? "Adding..." : "Add Restaurant"}
             </button>
           </div>
         </form>
+
+        {}
+        {createdRestId && (
+          <div className="flex justify-end pt-4">
+            <button
+              onClick={() => {
+                onAddMenu(createdRestId);
+                onClose();
+              }}
+              className="border border-orange-500 text-orange-600 px-4 py-2 rounded-lg hover:bg-orange-50"
+            >
+              ➕ Add Menu for this Restaurant
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

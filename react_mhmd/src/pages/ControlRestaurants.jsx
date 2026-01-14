@@ -31,17 +31,34 @@ function ControlRestaurants() {
     image: r.image || "placeholder.png",
   });
 
+  const closeAllModals = () => {
+    setShowAdd(false);
+    setShowEdit(false);
+    setShowPreview(false);
+    setShowEditMenu(false);
+    setSelectedRestId(null);
+  };
+
   const handleEdit = (id) => {
+    closeAllModals();
     setSelectedRestId(id);
     setShowEdit(true);
   };
 
   const handlePreview = (id) => {
+    closeAllModals();
     setSelectedRestId(id);
     setShowPreview(true);
   };
 
   const handleEditMenu = (id) => {
+    closeAllModals();
+    setSelectedRestId(id);
+    setShowEditMenu(true);
+  };
+
+  const handleAddMenu = (id) => {
+    closeAllModals();
     setSelectedRestId(id);
     setShowEditMenu(true);
   };
@@ -137,7 +154,10 @@ function ControlRestaurants() {
         </h1>
 
         <button
-          onClick={() => setShowAdd(true)}
+          onClick={() => {
+            closeAllModals();
+            setShowAdd(true);
+          }}
           className="bg-orange-500 text-white px-5 py-2 rounded-lg"
         >
           + Add Restaurant
@@ -194,6 +214,13 @@ function ControlRestaurants() {
 
               <button
                 onClick={() => handleEditMenu(rest.id)}
+                className="text-green-600 hover:text-green-800 text-sm"
+              >
+                ➕ Add Menu
+              </button>
+
+              <button
+                onClick={() => handleEditMenu(rest.id)}
                 className="text-purple-600 hover:text-purple-800 text-sm"
               >
                 🍽 Edit Menu
@@ -220,37 +247,26 @@ function ControlRestaurants() {
       {}
       {showAdd && (
         <AddRest
-          onClose={() => setShowAdd(false)}
-          onSuccess={() => {
-            setShowAdd(false);
-            fetchData();
-          }}
+          onClose={closeAllModals}
+          onSuccess={fetchData}
+          onAddMenu={handleAddMenu}
         />
       )}
 
       {showEdit && (
         <EditRest
           restId={selectedRestId}
-          onClose={() => setShowEdit(false)}
-          onSuccess={() => {
-            setShowEdit(false);
-            fetchData();
-          }}
+          onClose={closeAllModals}
+          onSuccess={fetchData}
         />
       )}
 
       {showPreview && (
-        <RestaurantPreview
-          restId={selectedRestId}
-          onClose={() => setShowPreview(false)}
-        />
+        <RestaurantPreview restId={selectedRestId} onClose={closeAllModals} />
       )}
 
       {showEditMenu && (
-        <EditMenu
-          restId={selectedRestId}
-          onClose={() => setShowEditMenu(false)}
-        />
+        <EditMenu restId={selectedRestId} onClose={closeAllModals} />
       )}
     </div>
   );

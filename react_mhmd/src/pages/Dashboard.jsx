@@ -27,7 +27,7 @@ function Dashboard() {
 
   return (
     <div>
-      {/* Header */}
+      {}
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <p className="text-gray-500 text-lg">
@@ -36,7 +36,7 @@ function Dashboard() {
         </p>
       </div>
 
-      {/* Cards */}
+      {}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <DashboardCards
           icon="fa-solid fa-store"
