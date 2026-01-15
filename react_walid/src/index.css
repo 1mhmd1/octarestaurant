@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --muted-foreground: 20 10% 45%;
+  --primary: 24 95% 53%;
+  --secondary: 30 30% 96%;
+  --accent: 24 100% 95%;
+  --accent-foreground: 24 95% 40%;
+}
+body {
+  @apply font-sans;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
